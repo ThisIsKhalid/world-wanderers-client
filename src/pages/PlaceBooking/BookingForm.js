@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import DatePicker from "react-date-picker";
 
 const BookingForm = ({ name }) => {
+    const [value, onChange] = useState(new Date());
+
+
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-white">
       <form action="" className="space-y-6 ng-untouched ng-pristine ng-valid">
@@ -32,8 +36,14 @@ const BookingForm = ({ name }) => {
           />
         </div>
         <div className="flex flex-row justify-between">
-          <input className=" px-4 py-3 rounded-md text-gray-800" type="date" />
-          <input className=" px-4 py-3 rounded-md text-gray-800" type="date" />
+          <div>
+            <p>From</p>
+            <DatePicker onChange={onChange} value={value} />
+          </div>
+          <div>
+            <p>To</p>
+            <DatePicker onChange={onChange} value={value} />
+          </div>
         </div>
 
         <button className="block w-full p-3 text-center rounded-sm text-black font-semibold bg-orange-400 hover:bg-orange-600">
