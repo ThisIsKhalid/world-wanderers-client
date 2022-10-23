@@ -1,34 +1,41 @@
+import { GoogleAuthProvider } from "firebase/auth";
 import React, { useContext } from "react";
+import toast from "react-hot-toast";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
-import toast from "react-hot-toast";
+
+const provider = new GoogleAuthProvider();
 
 const Register = () => {
-
-
-    const {createUser} = useContext(AuthContext);
-
+  const { createUser, signInWithGoogle } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const form = event.target;
-    const name = form.name.value;
+    // const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
 
     createUser(email, password)
-    .then(res => {
+      .then((res) => {
         console.log(res.user);
         toast.success("Registered Successfully!");
         form.reset();
-    })
-    .catch(error => {
+      })
+      .catch((error) => {
         console.error(error);
-    })
+      });
+  };
 
-    // console.log(name, email, password);
+  const googleSignIn = () => {
+    signInWithGoogle(provider)
+    .then(res => {
+      toast.success('Succesfully registered with Google!!');
+      console.log(res.user);
+    })
+    .catch(error => console.error(error));
   };
 
   return (
@@ -86,7 +93,7 @@ const Register = () => {
         <div className="flex-1 h-px sm:w-16 bg-gray-700"></div>
       </div>
       <div className="flex flex-row justify-evenly">
-        <button className="text-3xl">
+        <button onClick={googleSignIn} className="text-3xl">
           <FaGoogle></FaGoogle>
         </button>
         <button className="text-3xl">

@@ -1,11 +1,14 @@
+import { GoogleAuthProvider } from "firebase/auth";
 import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 
+const provider = new GoogleAuthProvider();
+
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login, signInWithGoogle } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -22,8 +25,15 @@ const Login = () => {
       .catch((error) => {
         console.error(error);
       });
+  };
 
-    // console.log(name, email, password);
+  const googleSignIn = () => {
+    signInWithGoogle(provider)
+      .then((res) => {
+        toast.success("Succesfully registered with Google!!");
+        console.log(res.user);
+      })
+      .catch((error) => console.error(error));
   };
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-gray-50 shadow-lg mt-5 border border-gray-200 mx-auto">
@@ -73,7 +83,7 @@ const Login = () => {
         <div className="flex-1 h-px sm:w-16 bg-gray-700"></div>
       </div>
       <div className="flex flex-row justify-evenly">
-        <button className="text-3xl">
+        <button onClick={googleSignIn} className="text-3xl">
           <FaGoogle></FaGoogle>
         </button>
         <button className="text-3xl">
