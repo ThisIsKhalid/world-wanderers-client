@@ -30,6 +30,11 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, provider);
   };
 
+  const signInWithFacebook = provider => {
+    setLoading(true);
+    return signInWithPopup(auth, provider);
+  }
+
   const login = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
@@ -68,6 +73,7 @@ const AuthProvider = ({ children }) => {
     emailVerify,
     updateUserProfile,
     signInWithGoogle,
+    signInWithFacebook,
     logOut,
     loading,
     setLoading

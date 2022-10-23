@@ -1,14 +1,21 @@
-import { GoogleAuthProvider } from "firebase/auth";
+import { FacebookAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 const Login = () => {
-  const { login, signInWithGoogle, setLoading } = useContext(AuthContext);
+  const {
+    login,
+    signInWithGoogle,
+    setLoading,
+    signInWithFacebook,
+    emailVerify,
+  } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -43,13 +50,44 @@ const Login = () => {
   };
 
   const googleSignIn = () => {
-    signInWithGoogle(provider)
+    signInWithGoogle(googleProvider)
       .then((res) => {
         toast.success("Succesfully registered with Google!!");
         console.log(res.user);
+        navigate(from, { replace: true });
       })
       .catch((error) => console.error(error));
   };
+
+  const facebookSignIn = () => {
+    signInWithFacebook(facebookProvider)
+      .then((res) => {
+        const user = res.user;
+        console.log(res.user);
+        if (!user.emailVerified) {
+          emailVerify()
+            .then(() => {
+              toast.success("Please check your email for verification link!!");
+              navigate(from, { replace: true });
+            })
+            .catch((error) => {
+              // console.error(error);
+              toast.error(error.message);
+            });
+        } else {
+          navigate(from, { replace: true });
+          toast.success("Succesfully SignUp with Facebook!!");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-gray-50 shadow-lg mt-5 border border-gray-200 mx-auto">
       <h1 className="text-2xl font-bold text-center">Login</h1>
@@ -104,7 +142,7 @@ const Login = () => {
         <button className="text-3xl">
           <FaGithub></FaGithub>
         </button>
-        <button className="text-3xl">
+        <button onClick={facebookSignIn} className="text-3xl">
           <FaFacebook></FaFacebook>
         </button>
       </div>

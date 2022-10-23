@@ -1,18 +1,23 @@
-import { GoogleAuthProvider } from "firebase/auth";
+import { FacebookAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 const Register = () => {
-  const { createUser, signInWithGoogle, emailVerify, updateUserProfile } =
-    useContext(AuthContext);
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const from = location.state?.from?.pathname || "/";
+  const {
+    createUser,
+    signInWithGoogle,
+    signInWithFacebook,
+    emailVerify,
+    updateUserProfile,
+    setLoading,
+  } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -33,7 +38,7 @@ const Register = () => {
         //profile update
         updateUserProfile({
           displayName: name,
-          photoURL: photoURL
+          photoURL: photoURL,
         })
           .then(() => {
             toast.success("Profile Updated");
@@ -44,7 +49,7 @@ const Register = () => {
                 toast.success(
                   "Please check your email for verification link!!"
                 );
-                // navigate(from, { replace: true });
+                navigate("/login");
               })
               .catch((error) => {
                 // console.error(error);
@@ -63,12 +68,41 @@ const Register = () => {
   };
 
   const googleSignIn = () => {
-    signInWithGoogle(provider)
+    signInWithGoogle(googleProvider)
       .then((res) => {
         toast.success("Succesfully registered with Google!!");
-        console.log(res.user);
+        // console.log(res.user);
+        navigate("/");
       })
       .catch((error) => console.error(error));
+  };
+
+  const facebookSignIn = () => {
+    signInWithFacebook(facebookProvider)
+      .then((res) => {
+        const user = res.user;
+        console.log(res.user);
+        if (!user.emailVerified) {
+          emailVerify()
+            .then(() => {
+              toast.success("Please check your email for verification link!!");
+              navigate("/login");
+            })
+            .catch((error) => {
+              // console.error(error);
+              toast.error(error.message);
+            });
+        } else {
+          navigate("/");
+          toast.success("Succesfully SignUp with Facebook!!");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -144,7 +178,7 @@ const Register = () => {
         <button className="text-3xl">
           <FaGithub></FaGithub>
         </button>
-        <button className="text-3xl">
+        <button onClick={facebookSignIn} className="text-3xl">
           <FaFacebook></FaFacebook>
         </button>
       </div>
