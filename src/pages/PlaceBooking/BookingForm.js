@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DatePicker from "react-date-picker";
+import { Link } from "react-router-dom";
 
 const BookingForm = ({ name }) => {
     const [value, onChange] = useState(new Date());
@@ -46,9 +47,9 @@ const BookingForm = ({ name }) => {
           </div>
         </div>
 
-        <button className="block w-full p-3 text-center rounded-sm text-black font-semibold bg-orange-400 hover:bg-orange-600">
+        <Link to='/hotels' className="block w-full p-3 text-center rounded-sm text-black font-semibold bg-orange-400 hover:bg-orange-600">
           Start Booking
-        </button>
+        </Link>
       </form>
     </div>
   );

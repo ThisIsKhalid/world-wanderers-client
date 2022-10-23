@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/Home/Home";
+import Hotels from "../pages/Hotels/Hotels";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Login/Register";
 import PlaceBooking from "../pages/PlaceBooking/PlaceBooking";
@@ -42,6 +43,11 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login></Login>,
+      },
+      {
+        path: "/hotels",
+        element: <Hotels></Hotels>,
+        loader: () => fetch("http://localhost:5000/hotels"),
       },
     ],
   },
