@@ -8,34 +8,58 @@ import { AuthContext } from "../../context/AuthProvider";
 const provider = new GoogleAuthProvider();
 
 const Register = () => {
-  const { createUser, signInWithGoogle } = useContext(AuthContext);
+  const { createUser, signInWithGoogle, emailVerify, updateUserProfile } =
+    useContext(AuthContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const form = event.target;
-    // const name = form.name.value;
+    const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
 
     createUser(email, password)
       .then((res) => {
-        console.log(res.user);
+        // console.log(res.user);
         toast.success("Registered Successfully!");
         form.reset();
+
+        //profile update
+        updateUserProfile({
+          displayName: name,
+        })
+          .then(() => {
+            toast.success("Profile Updated");
+
+            //email verification
+            emailVerify()
+              .then(() => {
+                toast.success("Please check your email and verify it!!");
+              })
+              .catch((error) => {
+                // console.error(error);
+                toast.error(error.message);
+              });
+          })
+          .catch((error) => {
+            // console.error(error)
+            toast.error(error.message);
+          });
       })
       .catch((error) => {
-        console.error(error);
+        // console.error(error);
+        toast.error(error.message);
       });
   };
 
   const googleSignIn = () => {
     signInWithGoogle(provider)
-    .then(res => {
-      toast.success('Succesfully registered with Google!!');
-      console.log(res.user);
-    })
-    .catch(error => console.error(error));
+      .then((res) => {
+        toast.success("Succesfully registered with Google!!");
+        console.log(res.user);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
