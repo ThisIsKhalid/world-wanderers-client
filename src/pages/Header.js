@@ -49,11 +49,7 @@ const Header = () => {
           {/* user name, user photo */}
           <div className="flex flex-row items-center">
             {user?.photoURL ? (
-              <img
-                className="h-10 w-10 rounded-full"
-                src={user?.photoURL}
-                alt=""
-              />
+              <img className="w-10 rounded-full" src={user?.photoURL} alt="" />
             ) : (
               <TfiUser></TfiUser>
             )}
@@ -207,26 +203,41 @@ const Header = () => {
                           PLACES
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to="/register"
-                          aria-label="Product pricing"
-                          title="Product pricing"
-                          className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-purple-400"
-                        >
-                          REGISTER
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/login"
-                          aria-label="About us"
-                          title="About us"
-                          className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-purple-400"
-                        >
-                          LOG IN
-                        </Link>
-                      </li>
+                      {user?.email && user?.uid ? (
+                        <li>
+                          <button
+                            onClick={handleLogOut}
+                            aria-label="About us"
+                            title="About us"
+                            className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-purple-400"
+                          >
+                            LOG OUT
+                          </button>
+                        </li>
+                      ) : (
+                        <>
+                          <li>
+                            <Link
+                              to="/register"
+                              aria-label="Product pricing"
+                              title="Product pricing"
+                              className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-purple-400"
+                            >
+                              REGISTER
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/login"
+                              aria-label="About us"
+                              title="About us"
+                              className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-purple-400"
+                            >
+                              LOG IN
+                            </Link>
+                          </li>
+                        </>
+                      )}
                     </ul>
                   </nav>
                 </div>

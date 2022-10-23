@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Login/Register";
 import PlaceBooking from "../pages/PlaceBooking/PlaceBooking";
 import Places from "../pages/Places/Places";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -26,17 +27,22 @@ export const router = createBrowserRouter([
       },
       {
         path: "/place/:id",
-        element: <PlaceBooking></PlaceBooking>,
-        loader: ({params}) => fetch(`http://localhost:5000/place/${params.id}`),
+        element: (
+          <PrivateRoute>
+            <PlaceBooking></PlaceBooking>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/place/${params.id}`),
       },
       {
-        path: '/register',
-        element: <Register></Register>
+        path: "/register",
+        element: <Register></Register>,
       },
       {
-        path: '/login',
-        element: <Login></Login>
-      }
+        path: "/login",
+        element: <Login></Login>,
+      },
     ],
   },
 ]);

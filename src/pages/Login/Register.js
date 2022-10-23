@@ -10,14 +10,19 @@ const provider = new GoogleAuthProvider();
 const Register = () => {
   const { createUser, signInWithGoogle, emailVerify, updateUserProfile } =
     useContext(AuthContext);
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const form = event.target;
     const name = form.name.value;
+    const photoURL = form.photoURL.value;
     const email = form.email.value;
     const password = form.password.value;
+    console.log(photoURL);
 
     createUser(email, password)
       .then((res) => {
@@ -28,6 +33,7 @@ const Register = () => {
         //profile update
         updateUserProfile({
           displayName: name,
+          photoURL: photoURL
         })
           .then(() => {
             toast.success("Profile Updated");
@@ -35,7 +41,10 @@ const Register = () => {
             //email verification
             emailVerify()
               .then(() => {
-                toast.success("Please check your email and verify it!!");
+                toast.success(
+                  "Please check your email for verification link!!"
+                );
+                // navigate(from, { replace: true });
               })
               .catch((error) => {
                 // console.error(error);
@@ -78,6 +87,18 @@ const Register = () => {
             name="name"
             id="username"
             placeholder="Your Name"
+            className="w-full px-4 py-3 rounded-md text-gray-800 text-xl "
+          />
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="photo" className="block text-gray-700">
+            Photo URL
+          </label>
+          <input
+            type="photo"
+            name="photoURL"
+            id="photo"
+            placeholder="Your Photo url"
             className="w-full px-4 py-3 rounded-md text-gray-800 text-xl "
           />
         </div>

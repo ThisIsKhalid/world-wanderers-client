@@ -2,13 +2,16 @@ import { GoogleAuthProvider } from "firebase/auth";
 import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 
 const provider = new GoogleAuthProvider();
 
 const Login = () => {
-  const { login, signInWithGoogle } = useContext(AuthContext);
+  const { login, signInWithGoogle, setLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,11 +22,23 @@ const Login = () => {
 
     login(email, password)
       .then((res) => {
-        toast.success("Successfully Login!");
+        const user = res.user;
         form.reset();
+        if (user.emailVerified) {
+          navigate(from, { replace: true });
+          toast.success("Successfully Login!");
+        } else {
+          toast.error(
+            "Your email is not verified.Plese check your email. If needed plese look in the spam section"
+          );
+        }
       })
       .catch((error) => {
-        console.error(error);
+        // console.error(error);
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
